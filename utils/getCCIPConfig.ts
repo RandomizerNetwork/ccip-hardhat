@@ -41,11 +41,11 @@ const ethereumMainnet = {
 const ethereumSepolia = {
   networkName: 'Ethereum',
   networkStage: 'Sepolia',
-  address: '0xd0daae2231e9cb96b94c8512223533293c3693bf',
+  address: '0x0bf3de8c5d3e8a2b34d2beeb17abfcebaf363a59',
   chainSelector: '16015286601757825753',
   lanes: [
     'polygonMumbai',
-    'arbitrumGoerli',
+    // 'arbitrumGoerli',
     'avalancheFuji',
     'binanceTestnet',
     'optimismGoerli',
@@ -96,12 +96,12 @@ const baseMainnet = {
 const baseGoerli = {
   networkName: 'Base',
   networkStage: 'Testnet',
-  address: '0xa8c0c11bf64af62cdca6f93d3769b88bdd7cb93d',
+  address: '0x80af2f44ed0469018922c9f483dc5a909862fdc2',
   chainSelector: '5790810961207155433',
-  lanes: ['ethereumSepolia'],
+  lanes: ['ethereumSepolia', 'optimismGoerli', 'binanceTestnet', 'avalancheFuji'],
   feeTokens: {
     ETH: '',
-    WETH: '',
+    WETH: '0x4200000000000000000000000000000000000006',
     LINK: '0xd886e2286fd1073df82462ea1822119600af80b6',
   },
   whitelistedTokens: {
@@ -128,9 +128,15 @@ const optimismMainnet = {
 const optimismGoerli = {
   networkName: 'Optimism',
   networkStage: 'Testnet',
-  address: '0xeb52e9ae4a9fb37172978642d4c141ef53876f26',
+  address: '0xcc5a0b910d9e9504a7561934bed294c51285a78d',
   chainSelector: '2664363617261496610',
-  lanes: ['ethereumSepolia', 'arbitrumGoerli', 'avalancheFuji'],
+  lanes: [
+    'ethereumSepolia', 
+    // 'arbitrumGoerli', 
+    'avalancheFuji',
+    'polygonMumbai',
+    'baseGoerli'
+  ],
   feeTokens: {
     ETH: '',
     WETH: '0x4200000000000000000000000000000000000006',
@@ -160,9 +166,15 @@ const avalancheMainnet = {
 const avalancheFuji = {
   networkName: 'Avalanche',
   networkStage: 'Fuji',
-  address: '0x554472a2720e5e7d5d3c817529aba05eed5f82d8',
+  address: '0xf694e193200268f9a4868e4aa017a0118c9a8177',
   chainSelector: '14767482510784806043',
-  lanes: ['ethereumSepolia', 'optimismGoerli', 'polygonMumbai'],
+  lanes: [
+    'ethereumSepolia', 
+    'optimismGoerli', 
+    'polygonMumbai',
+    'binanceTestnet',
+    'baseGoerli'
+  ],
   feeTokens: {
     AVAX: '',
     WAVAX: '0xd00ae08403B9bbb9124bB305C09058E32C39A48c',
@@ -229,7 +241,7 @@ const polygonMainnet = {
 const polygonMumbai = {
   networkName: 'Polygon',
   networkStage: 'Mumbai',
-  address: '0x70499c328e1e2a3c41108bd3730f6670a44595d1',
+  address: '0x1035cabc275068e0f4b745a29cedf38e13af41b1',
   chainSelector: '12532609583862916517',
   lanes: [
     'ethereumSepolia',
@@ -271,9 +283,14 @@ const binanceMainnet = {
 const binanceTestnet = {
   networkName: 'Binance',
   networkStage: 'Testnet',
-  address: '0x9527e2d01a3064ef6b50c1da1c0cc523803bcff2',
+  address: '0xe1053ae1857476f36a3c62580ff9b016e8ee8f6f',
   chainSelector: '13264668187771770619',
-  lanes: ['ethereumSepolia'],
+  lanes: [
+    'ethereumSepolia',
+    'avalancheFuji',
+    'polygonMumbai',
+    'baseGoerli'
+  ],
   feeTokens: {
     BNB: '',
     WBNB: '0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd',

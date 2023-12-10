@@ -1,9 +1,8 @@
 import { ethers } from "hardhat";
 import hre from 'hardhat'
 import getCCIPConfig from "../utils/getCCIPConfig";
-import { encodeBytes32String } from "ethers";
-import createDeterministicContract, { create2Address, encoder, sleep } from "../utils/deterministicContract";
-import { CCIPTokenSender__factory } from "../typechain-types";
+import createDeterministicContract, { create2Address, encoder } from "../utils/deterministicContract";
+import { readYaml, saveInfo } from "../utils/YamlUtilContract";
 
 async function main() {
   const network = await hre.network.name;
@@ -19,9 +18,13 @@ async function main() {
   console.log('ccipRouter', ccipRouter)
   console.log('whitelistedCCIPToken', ccipWhitelistedToken)
 
-  const deterministicFactory = await ethers.deployContract("DeterministicFactory")
-  const deployment = await deterministicFactory.waitForDeployment();
-  console.log(`DeterministicFactory deployed to: ${await deployment.getAddress()}`);
+  const deterministicFactoryAddress: string = readYaml(`DeterministicFactory`, network)
+  const deterministicFactory = await ethers.getContractAt('DeterministicFactory', deterministicFactoryAddress);
+  console.log(`DeterministicFactory deployed to: ${await deterministicFactory.getAddress()}`);
+
+  // const deterministicFactory = await ethers.deployContract("DeterministicFactory")
+  // const deployment = await deterministicFactory.waitForDeployment();
+  // console.log(`DeterministicFactory deployed to: ${await deployment.getAddress()}`);
 
   // const deterministicFactory = await ethers.getContractAt("DeterministicFactory", "0x974c5169327eFFe61051E0Bf6fA866DCcAc8141f")
   
@@ -29,13 +32,16 @@ async function main() {
   const contractFactory = await ethers.getContractFactory("CCIPTokenSender");
   const bytecode = contractFactory.bytecode;
 
-  const leadingZeroes = 3; // Number of leading zeroes desired in the address
+  // const leadingZeroes = 3; // Number of leading zeroes desired in the address
   const initCode = bytecode + encoder(["address", "address"], [ccipRouter, ccipWhitelistedToken]);
-  const deterministicSalt = await createDeterministicContract(await deterministicFactory.getAddress(), initCode, owner.address, leadingZeroes);
-  console.log('deterministicSalt', deterministicSalt)
+  // const deterministicSalt = await createDeterministicContract(await deterministicFactory.getAddress(), initCode, owner.address, leadingZeroes);
+  // console.log('deterministicSalt', deterministicSalt)
+  const deterministicSalt = "0x18b1973585223699a10076839e23e700aa57d52c17881f82e051f8f097dcf15a";
 
   const create2Addr = create2Address(await deterministicFactory.getAddress(), deterministicSalt, initCode);
   console.log("precomputed address:", create2Addr);
+
+  saveInfo('CCIPTokenSender', network, create2Addr);
 
   // Calculate the address where MyContract will be deployed
   // const predictedAddress = await deterministicFactory.getDeploymentAddress(deterministicSalt, bytecode);

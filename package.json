@@ -6,9 +6,33 @@
     "build": "npx hardhat compile",
     "test": "npx hardhat compile && npx hardhat test test/hardhat/*",
     "fork": "npx hardhat node",
-    "deployDeterministicFactory": "npx hardhat compile && npx hardhat run scripts/deployDeterministicFactory.ts --network ethereumSepolia",
-    "deployCCIPTokenSender": "npx hardhat compile && npx hardhat run scripts/deployCCIPTokenSender.ts --network ethereumSepolia",
-    "verifyFactory": "npx hardhat verify 0x974c5169327eFFe61051E0Bf6fA866DCcAc8141f --network ethereumSepolia"
+    "deployDeterministicFactorySepolia": "npx hardhat compile && npx hardhat run scripts/deployDeterministicFactory.ts --network ethereumSepolia",
+    "deployDeterministicFactoryMumbai": "npx hardhat compile && npx hardhat run scripts/deployDeterministicFactory.ts --network polygonMumbai",
+    "deployDeterministicFactoryBinanceTestnet": "npx hardhat compile && npx hardhat run scripts/deployDeterministicFactory.ts --network binanceTestnet",
+    "deployDeterministicFactoryAvalancheFuji": "npx hardhat compile && npx hardhat run scripts/deployDeterministicFactory.ts --network avalancheFuji",
+    "deployDeterministicFactoryOptimismGoerli": "npx hardhat compile && npx hardhat run scripts/deployDeterministicFactory.ts --network optimismGoerli",
+    "deployDeterministicFactoryBaseGoerli": "npx hardhat compile && npx hardhat run scripts/deployDeterministicFactory.ts --network baseGoerli",
+    
+    "verifyDeterministicFactorySepolia": "npx hardhat verify 0x9C51DBE256Cd4501b4A3d4E6E45A45CEe8A11C52 --network ethereumSepolia",
+    "verifyDeterministicFactoryMumbai": "npx hardhat verify 0x9C51DBE256Cd4501b4A3d4E6E45A45CEe8A11C52 --network polygonMumbai",
+    "verifyDeterministicFactoryBinanceTestnet": "npx hardhat verify 0x9C51DBE256Cd4501b4A3d4E6E45A45CEe8A11C52 --network binanceTestnet",
+    "verifyDeterministicFactoryAvalancheFuji": "npx hardhat verify 0x9C51DBE256Cd4501b4A3d4E6E45A45CEe8A11C52 --network avalancheFuji",
+    "verifyDeterministicFactoryOptimismGoerli": "npx hardhat verify 0x9C51DBE256Cd4501b4A3d4E6E45A45CEe8A11C52 --network optimismGoerli",
+    "verifyDeterministicFactoryBaseGoerli": "npx hardhat verify 0x9C51DBE256Cd4501b4A3d4E6E45A45CEe8A11C52 --network baseGoerli",
+
+    "deployCCIPTokenSenderSepolia": "npx hardhat compile && npx hardhat run scripts/deployCCIPTokenSender.ts --network ethereumSepolia",
+    "deployCCIPTokenSenderMumbai": "npx hardhat compile && npx hardhat run scripts/deployCCIPTokenSender.ts --network polygonMumbai",
+    "deployCCIPTokenSenderBinanceTestnet": "npx hardhat compile && npx hardhat run scripts/deployCCIPTokenSender.ts --network binanceTestnet",
+    "deployCCIPTokenSenderAvalancheFuji": "npx hardhat compile && npx hardhat run scripts/deployCCIPTokenSender.ts --network avalancheFuji",
+    "deployCCIPTokenSenderOptimismGoerli": "npx hardhat compile && npx hardhat run scripts/deployCCIPTokenSender.ts --network optimismGoerli",
+    "deployCCIPTokenSenderBaseGoerli": "npx hardhat compile && npx hardhat run scripts/deployCCIPTokenSender.ts --network baseGoerli",
+
+    "verifyCCIPTokenSenderSepolia": "npx hardhat verify 0x000B50CCA859C3a26702D636F5E69Ba90de84840 --network ethereumSepolia 0x0bf3de8c5d3e8a2b34d2beeb17abfcebaf363a59 0xFd57b4ddBf88a4e07fF4e34C487b99af2Fe82a05",
+    "verifyCCIPTokenSenderMumbai": "npx hardhat verify 0x000B50CCA859C3a26702D636F5E69Ba90de84840 --network polygonMumbai",
+    "verifyCCIPTokenSenderBinanceTestnet": "npx hardhat verify 0x000B50CCA859C3a26702D636F5E69Ba90de84840 --network binanceTestnet",
+    "verifyCCIPTokenSenderAvalancheFuji": "npx hardhat verify 0x000B50CCA859C3a26702D636F5E69Ba90de84840 --network avalancheFuji",
+    "verifyCCIPTokenSenderOptimismGoerli": "npx hardhat verify 0x000B50CCA859C3a26702D636F5E69Ba90de84840 --network optimismGoerli",
+    "verifyCCIPTokenSenderBaseGoerli": "npx hardhat verify 0x000B50CCA859C3a26702D636F5E69Ba90de84840 --network baseGoerli"
   },
   "dependencies": {
     "@chainlink/contracts-ccip": "^1.2.1",

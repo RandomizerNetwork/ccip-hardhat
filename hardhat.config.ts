@@ -12,11 +12,15 @@ const {
   ALCHEMY_GOERLI,
   ALCHEMY_POLYGON,
   ALCHEMY_MUMBAI,
+  ALCHEMY_BASE_GOERLI,
+  ALCHEMY_OPTIMISM_GOERLI,
+  BSCSCAN_TESTNET,
   PRIVATE_KEY,
   PRIVATE_KEY_2,
   REPORT_GAS,
   ETHERSCAN_API_KEY,
   POLYGONSCAN_API_KEY,
+  BSCSCAN_API_KEY,
   CMC,
   ALCHEMY_SEPOLIA,
   FUJI,
@@ -59,12 +63,30 @@ const config: HardhatUserConfig = {
       accounts: [PRIVATE_KEY!],
       // gasPrice: 30000000000, // 30 GWEI
     },
-    fuji: {
+    avalancheFuji: {
       chainId: 43113,
       url: FUJI!,
       accounts: [PRIVATE_KEY!],
-      gasPrice: 30000000000, // 30 GWEI
+      // gasPrice: 30000000000, // 30 GWEI
     },
+    binanceTestnet: {
+      chainId: 97,
+      url: BSCSCAN_TESTNET!,
+      accounts: [PRIVATE_KEY!],
+      // gasPrice: 30000000000, // 30 GWEI
+    },
+    baseGoerli: {
+      chainId: 84531,
+      url: ALCHEMY_BASE_GOERLI!,
+      accounts: [PRIVATE_KEY!],
+      // gasPrice: 30000000000, // 30 GWEI
+    },
+    optimismGoerli: {
+      chainId: 420,
+      url: ALCHEMY_OPTIMISM_GOERLI!,
+      accounts: [PRIVATE_KEY!],
+      // gasPrice: 30000000000, // 30 GWEI
+    }
   },
   mocha: {
     timeout: 100000000,
@@ -83,9 +105,11 @@ const config: HardhatUserConfig = {
       mainnet: ETHERSCAN_API_KEY!,
       goerli: ETHERSCAN_API_KEY!,
       ethereumSepolia: ETHERSCAN_API_KEY!,
+      binanceTestnet: BSCSCAN_API_KEY!,
       polyMainnet: POLYGONSCAN_API_KEY!,
       polygonMumbai: POLYGONSCAN_API_KEY!,
-      fuji: FUJI_EXPLORER_API_KEY!,
+      avalancheFuji: FUJI_EXPLORER_API_KEY!,
+      baseGoerli: 'no API needed atm'
     },
     customChains: [
       {
@@ -113,11 +137,35 @@ const config: HardhatUserConfig = {
         },
       },
       {
-        network: "fuji",
+        network: "avalancheFuji",
         chainId: 43113,
         urls: {
           apiURL: "https://api-testnet.snowtrace.io/api",
           browserURL: "https://testnet.snowtrace.io/",
+        },
+      },
+      {
+        network: "binanceTestnet",
+        chainId: 97,
+        urls: {
+          apiURL: "https://api-testnet.snowtrace.io/api",
+          browserURL: "https://testnet.snowtrace.io/",
+        },
+      },
+      {
+        network: "baseGoerli",
+        chainId: 84531,
+        urls: {
+          apiURL: "https://api-goerli.basescan.org/api",
+          browserURL: "https://goerli.basescan.org/",
+        },
+      },
+      {
+        network: "optimismGoerli",
+        chainId: 420,
+        urls: {
+          apiURL: "https://api-goerli-optimistic.etherscan.io/api",
+          browserURL: "https://goerli-optimism.etherscan.io/",
         },
       },
     ],
@@ -125,7 +173,7 @@ const config: HardhatUserConfig = {
   sourcify: {
     // Disabled by default
     // Doesn't need an API key
-    enabled: true
+    enabled: false
   },
   solidity: {
     compilers: [
