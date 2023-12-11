@@ -1,7 +1,7 @@
 {
   "name": "ccip-token-sender",
   "version": "1.0.0",
-  "description": "Chainlink CCIP ERC20 Multi Token Private Beta",
+  "description": "Chainlink CCIP ERC20 Multi Token General Access + Early Access",
   "scripts": {
     "build": "npx hardhat compile",
     "test": "npx hardhat compile && npx hardhat test test/hardhat/*",
