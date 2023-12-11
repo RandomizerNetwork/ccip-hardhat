@@ -14,6 +14,22 @@ contract CCIPMultiTokenSender {
     error GasShouldBeZero();
     error ExceedsTokenLimit();
 
+    // EIP-712 Domain Separator
+    bytes32 public immutable DOMAIN_SEPARATOR;
+
+    // Struct for EIP-712
+    struct EVM2AnyMessageWithSig {
+        Client.EVM2AnyMessage message;
+        uint8 v;
+        bytes32 r;
+        bytes32 s;
+    }
+
+    // Hash of the struct
+    bytes32 public constant EVM2ANYMESSAGE_TYPEHASH = keccak256(
+        "EVM2AnyMessageWithSig(address feeToken,uint256[] tokenAmounts,bytes data,bytes extraArgs,uint8 v,bytes32 r,bytes32 s)"
+    );
+
     IRouterClient public immutable ccipRouter;
     mapping(address => bool) public ccipWhitelistedTokens;
 
@@ -24,6 +40,69 @@ contract CCIPMultiTokenSender {
             ccipWhitelistedTokens[_tokens[i]] = true;
             IERC20(_tokens[i]).approve(_router, type(uint256).max);
         }
+        DOMAIN_SEPARATOR = keccak256(
+            abi.encode(
+                keccak256(
+                    "EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"
+                ),
+                keccak256(bytes("CCIPMultiTokenSender")), // Replace with your contract's name
+                keccak256(bytes("1")), // Version
+                block.chainid,
+                address(this)
+            )
+        );
+    }
+
+    /** @notice Validates and processes the signed message
+     *  @param messageWithSig The signed message
+     *  @return messageId The CCIP transfer response from the destination chain
+     */
+    function ccipSendWithSig(
+        uint64 destinationChainSelector,
+        EVM2AnyMessageWithSig calldata messageWithSig
+    ) external payable returns (bytes32 messageId) {
+        // Verify the signature
+        require(
+            _verify(messageWithSig),
+            "Invalid signature"
+        );
+
+        // Process the message
+        return this.ccipSend(destinationChainSelector, messageWithSig.message);
+    }
+
+    /** @notice Verifies the signature
+     *  @param messageWithSig The message with signature
+     *  @return True if the signature is valid, false otherwise
+     */
+    function _verify(EVM2AnyMessageWithSig calldata messageWithSig)
+        internal
+        view
+        returns (bool)
+    {
+        bytes32 structHash = keccak256(
+            abi.encode(
+                EVM2ANYMESSAGE_TYPEHASH,
+                messageWithSig.message.feeToken,
+                keccak256(abi.encode(messageWithSig.message.tokenAmounts)),
+                keccak256(messageWithSig.message.data),
+                keccak256(messageWithSig.message.extraArgs),
+                messageWithSig.v,
+                messageWithSig.r,
+                messageWithSig.s
+            )
+        );
+
+        bytes32 digest = keccak256(
+            abi.encodePacked(
+                "\x19\x01",
+                DOMAIN_SEPARATOR,
+                structHash
+            )
+        );
+
+        address signer = ecrecover(digest, messageWithSig.v, messageWithSig.r, messageWithSig.s);
+        return signer != address(0) && signer == msg.sender;
     }
 
     /** @notice Forwards Fee request to the CCIP router and returns the result
