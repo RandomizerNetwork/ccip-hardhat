@@ -6,6 +6,10 @@ import {SafeERC20} from "@chainlink/contracts-ccip/src/v0.8/vendor/openzeppelin-
 import {IRouterClient} from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
 import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
 
+interface IERC1271 {
+    function isValidSignature(bytes32 _hash, bytes memory _signature) external view returns (bytes4 magicValue);
+}
+
 contract CCIPMultiTokenSender {
     using SafeERC20 for IERC20;
 
@@ -34,7 +38,7 @@ contract CCIPMultiTokenSender {
     mapping(address => bool) public ccipWhitelistedTokens;
 
     constructor(address _router, address[] memory _tokens) {
-        if (_tokens.length > 5) revert ExceedsTokenLimit();
+        // if (_tokens.length > 5) revert ExceedsTokenLimit();
         ccipRouter = IRouterClient(_router);
         for (uint i = 0; i < _tokens.length; i++) {
             ccipWhitelistedTokens[_tokens[i]] = true;
@@ -71,7 +75,7 @@ contract CCIPMultiTokenSender {
         return this.ccipSend(destinationChainSelector, messageWithSig.message);
     }
 
-    /** @notice Verifies the signature
+    /** @notice Verifies the signature for both EIP712 for EOA and EIP1271 for AA
      *  @param messageWithSig The message with signature
      *  @return True if the signature is valid, false otherwise
      */
@@ -93,16 +97,26 @@ contract CCIPMultiTokenSender {
             )
         );
 
-        bytes32 digest = keccak256(
-            abi.encodePacked(
-                "\x19\x01",
-                DOMAIN_SEPARATOR,
-                structHash
-            )
-        );
-
+        bytes32 digest = keccak256(abi.encodePacked("\x19\x01", DOMAIN_SEPARATOR, structHash));
         address signer = ecrecover(digest, messageWithSig.v, messageWithSig.r, messageWithSig.s);
-        return signer != address(0) && signer == msg.sender;
+        
+        if (signer == address(0)) {
+            return false;
+        }
+
+        uint256 size;
+        assembly {
+            size := extcodesize(signer)
+        }
+
+        if (size > 0) {
+            // Signer is a contract, use EIP-1271
+            bytes memory signature = abi.encodePacked(messageWithSig.r, messageWithSig.s, messageWithSig.v);
+            return IERC1271(signer).isValidSignature(digest, signature) == 0x1626ba7e; // ERC1271 MAGIC VALUE
+        } else {
+            // Signer is an EOA
+            return signer == msg.sender;
+        }
     }
 
     /** @notice Forwards Fee request to the CCIP router and returns the result
@@ -168,13 +182,7 @@ contract CCIPMultiTokenSender {
     function _validateMessage(
         Client.EVM2AnyMessage calldata message
     ) internal view {
-        if (message.tokenAmounts.length == 0 || message.tokenAmounts.length > 5)
-            revert ExceedsTokenLimit();
-        if (
-            message.tokenAmounts.length == 0 || message.tokenAmounts.length > 5
-        ) {
-            revert ExceedsTokenLimit();
-        }
+        if (message.tokenAmounts.length == 0 || message.tokenAmounts.length > 5) revert ExceedsTokenLimit();
 
         for (uint i = 0; i < message.tokenAmounts.length; i++) {
             if (!ccipWhitelistedTokens[message.tokenAmounts[i].token]) {
