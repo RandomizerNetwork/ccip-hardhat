@@ -17,6 +17,9 @@ dependencies:
   '@types/js-yaml':
     specifier: ^4.0.9
     version: 4.0.9
+  '@uniswap/v2-core':
+    specifier: ^1.0.1
+    version: 1.0.1
   dotenv:
     specifier: ^16.3.1
     version: 16.3.1
@@ -1206,6 +1209,11 @@ packages:
     dependencies:
       '@types/node': 20.10.7
     dev: true
+
+  /@uniswap/v2-core@1.0.1:
+    resolution: {integrity: sha512-MtybtkUPSyysqLY2U210NBDeCHX+ltHt3oADGdjqoThZaFRDKwM6k1Nb3F0A3hk5hwuQvytFWhrWHOEq6nVJ8Q==}
+    engines: {node: '>=10'}
+    dev: false
 
   /abbrev@1.0.9:
     resolution: {integrity: sha512-LEyx4aLEC3x6T0UguF6YILf+ntvmOaWsVfENmIW0E9H09vKlLDGelMjjSm0jkDHALj8A8quZ/HapKNigzwge+Q==}

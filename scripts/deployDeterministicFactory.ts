@@ -1,5 +1,5 @@
 import { ethers } from "hardhat";
-import { saveInfo } from "../utils/YamlUtilContract";
+import { saveInfo } from "../utils/yaml/YamlUtilContract";
 import hre from 'hardhat'
 
 async function main() {

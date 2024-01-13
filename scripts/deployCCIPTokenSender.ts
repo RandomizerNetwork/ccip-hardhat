@@ -1,8 +1,8 @@
 import { ethers } from "hardhat";
 import hre from 'hardhat'
-import getCCIPConfig from "../utils/getCCIPConfig";
-import createDeterministicContract, { create2Address, encoder } from "../utils/deterministicContract";
-import { readYaml, saveInfo } from "../utils/YamlUtilContract";
+import getCCIPConfig from "../utils/ccip/getCCIPConfig";
+import createDeterministicContract, { create2Address, encoder } from "../utils/crypto/deterministicContract";
+import { readYaml, saveInfo } from "../utils/yaml/YamlUtilContract";
 
 async function main() {
   const network = await hre.network.name;

@@ -1,0 +1,97 @@
+Arguments: 
+  /Users/web3/.nvm/versions/node/v20.10.0/bin/node /usr/local/Cellar/yarn/1.22.19/libexec/bin/yarn.js add @safe-global/safe-deployments
+
+PATH: 
+  /usr/local/opt/openjdk@19/bin:/Users/web3/.bun/bin:/Users/web3/.nvm/versions/node/v20.10.0/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Users/web3/Library/pnpm:/usr/local/opt/openjdk@19/bin:/Users/web3/.bun/bin:/Users/web3/.nvm/versions/node/v20.10.0/bin:/Users/web3/.foundry/bin
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  20.10.0
+
+Platform: 
+  darwin arm64
+
+Trace: 
+  Error: ENOENT: no such file or directory, copyfile '/Users/web3/Library/Caches/Yarn/v6/npm-jsonfile-6.1.0-bc55b2634793c679ec6403094eb13698a6ec0aae-integrity/node_modules/jsonfile/README.md' -> '/Users/web3/Documents/CHAINLINK/Constelation/randomizer/ccip-hardhat/node_modules/@typechain/hardhat/node_modules/jsonfile/README.md'
+
+npm manifest: 
+  {
+    "name": "ccip-token-sender",
+    "version": "1.0.0",
+    "description": "Chainlink CCIP ERC20 Multi Token General Access + Early Access",
+    "scripts": {
+      "build": "npx hardhat compile",
+      "test": "npx hardhat compile && npx hardhat test",
+      "fork": "npx hardhat node",
+      "deployDeterministicFactorySepolia": "npx hardhat compile && npx hardhat run scripts/deployDeterministicFactory.ts --network ethereumSepolia",
+      "deployDeterministicFactoryMumbai": "npx hardhat compile && npx hardhat run scripts/deployDeterministicFactory.ts --network polygonMumbai",
+      "deployDeterministicFactoryBinanceTestnet": "npx hardhat compile && npx hardhat run scripts/deployDeterministicFactory.ts --network binanceTestnet",
+      "deployDeterministicFactoryAvalancheFuji": "npx hardhat compile && npx hardhat run scripts/deployDeterministicFactory.ts --network avalancheFuji",
+      "deployDeterministicFactoryOptimismGoerli": "npx hardhat compile && npx hardhat run scripts/deployDeterministicFactory.ts --network optimismGoerli",
+      "deployDeterministicFactoryBaseGoerli": "npx hardhat compile && npx hardhat run scripts/deployDeterministicFactory.ts --network baseGoerli",
+      "verifyDeterministicFactorySepolia": "npx hardhat verify 0x9C51DBE256Cd4501b4A3d4E6E45A45CEe8A11C52 --network ethereumSepolia",
+      "verifyDeterministicFactoryMumbai": "npx hardhat verify 0x9C51DBE256Cd4501b4A3d4E6E45A45CEe8A11C52 --network polygonMumbai",
+      "verifyDeterministicFactoryBinanceTestnet": "npx hardhat verify 0x9C51DBE256Cd4501b4A3d4E6E45A45CEe8A11C52 --network binanceTestnet",
+      "verifyDeterministicFactoryAvalancheFuji": "npx hardhat verify 0x9C51DBE256Cd4501b4A3d4E6E45A45CEe8A11C52 --network avalancheFuji",
+      "verifyDeterministicFactoryOptimismGoerli": "npx hardhat verify 0x9C51DBE256Cd4501b4A3d4E6E45A45CEe8A11C52 --network optimismGoerli",
+      "verifyDeterministicFactoryBaseGoerli": "npx hardhat verify 0x9C51DBE256Cd4501b4A3d4E6E45A45CEe8A11C52 --network baseGoerli",
+      "deployCCIPTokenSenderSepolia": "npx hardhat compile && npx hardhat run scripts/deployCCIPTokenSender.ts --network ethereumSepolia",
+      "deployCCIPTokenSenderMumbai": "npx hardhat compile && npx hardhat run scripts/deployCCIPTokenSender.ts --network polygonMumbai",
+      "deployCCIPTokenSenderBinanceTestnet": "npx hardhat compile && npx hardhat run scripts/deployCCIPTokenSender.ts --network binanceTestnet",
+      "deployCCIPTokenSenderAvalancheFuji": "npx hardhat compile && npx hardhat run scripts/deployCCIPTokenSender.ts --network avalancheFuji",
+      "deployCCIPTokenSenderOptimismGoerli": "npx hardhat compile && npx hardhat run scripts/deployCCIPTokenSender.ts --network optimismGoerli",
+      "deployCCIPTokenSenderBaseGoerli": "npx hardhat compile && npx hardhat run scripts/deployCCIPTokenSender.ts --network baseGoerli",
+      "verifyCCIPTokenSenderSepolia": "npx hardhat verify 0x000B50CCA859C3a26702D636F5E69Ba90de84840 --network ethereumSepolia 0x0bf3de8c5d3e8a2b34d2beeb17abfcebaf363a59 0xFd57b4ddBf88a4e07fF4e34C487b99af2Fe82a05",
+      "verifyCCIPTokenSenderMumbai": "npx hardhat verify 0x000B50CCA859C3a26702D636F5E69Ba90de84840 --network polygonMumbai",
+      "verifyCCIPTokenSenderBinanceTestnet": "npx hardhat verify 0x000B50CCA859C3a26702D636F5E69Ba90de84840 --network binanceTestnet",
+      "verifyCCIPTokenSenderAvalancheFuji": "npx hardhat verify 0x000B50CCA859C3a26702D636F5E69Ba90de84840 --network avalancheFuji",
+      "verifyCCIPTokenSenderOptimismGoerli": "npx hardhat verify 0x000B50CCA859C3a26702D636F5E69Ba90de84840 --network optimismGoerli",
+      "verifyCCIPTokenSenderBaseGoerli": "npx hardhat verify 0x000B50CCA859C3a26702D636F5E69Ba90de84840 --network baseGoerli"
+    },
+    "dependencies": {
+      "@chainlink/contracts": "^0.8.0",
+      "@chainlink/contracts-ccip": "^1.2.1",
+      "@openzeppelin/contracts": "4.8.0",
+      "@types/js-yaml": "^4.0.9",
+      "dotenv": "^16.3.1",
+      "ethers-v5": "npm:ethers@5.7.2",
+      "js-yaml": "^4.1.0"
+    },
+    "devDependencies": {
+      "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
+      "@nomicfoundation/hardhat-ethers": "^3.0.0",
+      "@nomicfoundation/hardhat-network-helpers": "^1.0.0",
+      "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+      "@nomicfoundation/hardhat-verify": "^2.0.2",
+      "@typechain/ethers-v6": "^0.5.0",
+      "@typechain/hardhat": "^9.0.0",
+      "@types/chai": "^4.2.0",
+      "@types/mocha": ">=9.1.0",
+      "chai": "^4.2.0",
+      "ethers": "6.9.0",
+      "hardhat": "^2.14.0",
+      "hardhat-gas-reporter": "^1.0.8",
+      "solidity-coverage": "^0.8.0",
+      "ts-node": ">=8.0.0",
+      "typechain": "^8.3.0"
+    },
+    "mocha": {
+      "timeout": "100000"
+    },
+    "keywords": [
+      "Chainlink",
+      "Cross Chain Interoperability Protocol",
+      "CCIP",
+      "ERC20"
+    ],
+    "author": "https://github.com/RandomizerNetwork",
+    "license": "MIT"
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

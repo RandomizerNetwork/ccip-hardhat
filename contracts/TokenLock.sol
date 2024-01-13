@@ -2,13 +2,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.21;
 
-// import "hardhat/console.sol";
+import "hardhat/console.sol";
+import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import {SafeERC20, IERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-interface IERC20 {
-    function transfer(address recipient, uint256 amount) external returns (bool);
-}
-
-contract TokenLock {
+contract TokenLock is ReentrancyGuard {
     IERC20 public token;
     address public owner;
 
@@ -33,7 +32,7 @@ contract TokenLock {
         uint256 duration;
     }
 
-    mapping(address => VestingInfo) public vesting;
+    mapping(address => VestingInfo[]) public vesting;
 
     constructor(address _token) {
         if(_token == address(0)) revert NoZeroAddress();
@@ -43,81 +42,67 @@ contract TokenLock {
 
     function addVesting(
         address beneficiary,
-        uint256 start,
         uint256 cliffDurationInDays,
-        uint256 durationInDays,
+        uint256 vestingDurationInDays,
         uint256 totalAmount
     ) public onlyOwner {
-        require(msg.sender == address(token), "Not Authorized");
-        
-        require(vesting[beneficiary].totalBalance == 0, "Vesting already exists");
+        require(msg.sender == owner, "Not Authorized");
+        // require(vesting[beneficiary].totalBalance == 0, "Vesting already exists");
 
-        vesting[beneficiary] = VestingInfo({
+        uint256 start = block.timestamp;
+        vesting[beneficiary].push(VestingInfo({
             totalBalance: totalAmount,
             released: 0,
             start: start,
             cliff: start + cliffDurationInDays * 1 days,
-            duration: durationInDays * 1 days
-        });
+            duration: vestingDurationInDays * 1 days
+        }));
     }
 
-    function release(address beneficiary) public {
-        VestingInfo storage info = vesting[beneficiary];
+    function release(address beneficiary, uint256 vestingIndex) public nonReentrant {
+        require(vestingIndex < vesting[beneficiary].length, "Invalid vesting index");
+        VestingInfo storage info = vesting[beneficiary][vestingIndex];
 
         if (info.totalBalance == 0) revert NoVestingInfo();
 
-        uint256 unreleased = _releasableAmount(beneficiary);
+        uint256 unreleased = releasableAmount(beneficiary, vestingIndex);
+
+        console.log("Inside release unreleased %o", unreleased);
 
         if (unreleased == 0) revert NothingToRelease();
 
         info.released += unreleased;
-        require(token.transfer(beneficiary, unreleased), "Token transfer failed");
+        SafeERC20.safeTransfer(IERC20(token), beneficiary, unreleased);
+        // require(token.transfer(beneficiary, unreleased), "Token transfer failed");
 
         emit Released(beneficiary, unreleased);
     }
 
-    function _releasableAmount(address beneficiary) private view returns (uint256) {
-        VestingInfo storage info = vesting[beneficiary];
+    function releasableAmount(address beneficiary, uint256 vestingIndex) public view returns (uint256) {
+        require(vestingIndex < vesting[beneficiary].length, "Invalid vesting index");
+        VestingInfo storage info = vesting[beneficiary][vestingIndex];
 
-        if (block.timestamp < info.cliff) revert CliffNotReached();
-        
-        if (block.timestamp >= info.start + info.duration) {
-            return info.totalBalance - info.released;
-        } else {
-            uint256 vested = (info.totalBalance * (block.timestamp - info.start)) / info.duration;
-            return vested - info.released;
+        // If we are still in the cliff period, no tokens are vested.
+        if (block.timestamp < info.cliff) {
+            revert CliffNotReached();
         }
+
+        // If the vesting period has ended, all tokens are vested.
+        if (block.timestamp >= info.start + info.cliff + info.duration) {
+            return info.totalBalance - info.released;
+        }
+
+        // Calculate the fraction of the vesting duration that has passed since the cliff.
+        uint256 timeSinceCliff = block.timestamp - info.cliff; // Time since the cliff started
+        uint256 vestingDurationSinceCliff = info.duration - (info.cliff - info.start); // Total vesting duration minus the cliff duration
+        uint256 vested = (info.totalBalance * timeSinceCliff) / vestingDurationSinceCliff;
+
+        // Ensure that the calculation does not exceed the total balance.
+        if (vested > info.totalBalance) {
+            vested = info.totalBalance;
+        }
+
+        return vested - info.released;
     }
+
 }
-
-// // Uncomment this line to use console.log
-// import "hardhat/console.sol";
-
-// contract Lock {
-//     uint public unlockTime;
-//     address payable public owner;
-
-//     event Withdrawal(uint amount, uint when);
-
-//     constructor(uint _unlockTime) payable {
-//         require(
-//             block.timestamp < _unlockTime,
-//             "Unlock time should be in the future"
-//         );
-
-//         unlockTime = _unlockTime;
-//         owner = payable(msg.sender);
-//     }
-
-//     function withdraw() public {
-//         // Uncomment this line, and the import of "hardhat/console.sol", to print a log in your terminal
-//         console.log("Unlock time is %o and block timestamp is %o", unlockTime, block.timestamp);
-
-//         require(block.timestamp >= unlockTime, "You can't withdraw yet");
-//         require(msg.sender == owner, "You aren't the owner");
-
-//         emit Withdrawal(address(this).balance, block.timestamp);
-
-//         owner.transfer(address(this).balance);
-//     }
-// }
